@@ -1,0 +1,29 @@
+version: '3.7'
+services:
+  web:
+    build: ./web
+    volumes:
+      - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+    working_dir: ${APP_PATH_CONTAINER}
+  db:
+    image: mariadb
+    container_name: maria-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - ${DB_PATH_HOST}:/var/lib/mysql
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 6080:8080
+  nginx:
+    image: nginx:1.17-alpine
+    container_name: staff-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ${APP_PATH_HOST}:/var/html
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
